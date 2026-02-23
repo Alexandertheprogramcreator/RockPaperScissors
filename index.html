@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Bot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a2e;
+            color: white;
+        }
+        .game-container {
+            text-align: center;
+            background: #16213e;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 350px;
+        }
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #444;
+            padding-bottom: 15px;
+        }
+        .score-box span {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ecca3;
+        }
+        .reveal-section {
+            margin: 30px 0;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        #bot-hand {
+            font-size: 4rem;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .choices button {
+            font-size: 2rem;
+            padding: 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            background: #0f3460;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+        .choices button:hover {
+            background: #4ecca3;
+            transform: translateY(-5px);
+        }
+        .choices button:active {
+            transform: scale(0.9);
+        }
+        #message {
+            margin-top: 25px;
+            font-size: 1.1rem;
+            min-height: 1.5em;
+            color: #95a5a6;
+        }
+        .win { color: #4ecca3 !important; }
+        .lose { color: #e94560 !important; }
+    </style>
+</head>
+<body>
+
+    <div id="main-content" class="game-container">
+        <h1>Bot Battle</h1>
+        <div class="scoreboard">
+            <div class="score-box">Player <span id="player-score">0</span></div>
+            <div class="score-box">Bot <span id="bot-score">0</span></div>
+        </div>
+        <div class="reveal-section">
+            <small>Bot's Choice</small>
+            <div id="bot-hand">🤖</div>
+        </div>
+        <div class="choices">
+            <button onclick="play('rock')" title="Rock">🪨</button>
+            <button onclick="play('paper')" title="Paper">📄</button>
+            <button onclick="play('scissors')" title="Scissors">✂️</button>
+        </div>
+        <p id="message">Make your move!</p>
+    </div>
+
+    <script>
+        let playerScore = 0;
+        let botScore = 0;
+        const emojis = { rock: '🪨', paper: '📄', scissors: '✂️' };
+
+        function play(playerChoice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const botChoice = choices[Math.floor(Math.random() * 3)];
+            const botHandElement = document.getElementById('bot-hand');
+            const messageElement = document.getElementById('message');
+            
+            botHandElement.style.transform = 'scale(0.5)';
+            setTimeout(() => {
+                botHandElement.innerText = emojis[botChoice];
+                botHandElement.style.transform = 'scale(1)';
+            }, 50);
+
+            let result = "";
+            messageElement.classList.remove('win', 'lose');
+
+            if (playerChoice === botChoice) {
+                result = "It's a tie!";
+            } else if (
+                (playerChoice === 'rock' && botChoice === 'scissors') ||
+                (playerChoice === 'paper' && botChoice === 'rock') ||
+                (playerChoice === 'scissors' && botChoice === 'paper')
+            ) {
+                playerScore++;
+                result = "Point for you!";
+                messageElement.classList.add('win');
+            } else {
+                botScore++;
+                result = "Bot takes it!";
+                messageElement.classList.add('lose');
+            }
+
+            messageElement.innerText = result;
+            document.getElementById('player-score').innerText = playerScore;
+            document.getElementById('bot-score').innerText = botScore;
+        }
+
+        window.addEventListener('beforeunload', (event) => {
+            document.body.innerHTML = `
+                <div style="background:#1a1a2e; color:white; height:100vh; width:100vw; 
+                            display:flex; flex-direction:column; justify-content:center; 
+                            align-items:center; text-align:center; font-family:sans-serif; padding:20px;">
+                    <h1 style="color:#4ecca3; font-size: 2.5rem;">Wait!</h1>
+                    <p style="font-size:1.5rem; max-width: 600px;">
+                        Before you go, make sure to thank <strong>Alexander Sanders</strong>, 
+                        the creator of this webpage, for an awesome experience!
+                    </p>
+                    <p style="color:#95a5a6; margin-top:30px;">(Close the tab again to confirm exit)</p>
+                </div>`;
+
+            event.preventDefault();
+            event.returnValue = ''; 
+        });
+    </script>
+</body>
+</html>
